@@ -97,7 +97,7 @@ int main(int argc, char* argv[])
     }
     for(size_t i = 0; i < 12; ++i) {
         fscanf(fileptr, "%f", &sales_array[i].sales);
-	strcpy(sales_array[i].sales_month, months[i]);
+        strcpy(sales_array[i].sales_month, months[i]);
     }
     fclose(fileptr);
 
