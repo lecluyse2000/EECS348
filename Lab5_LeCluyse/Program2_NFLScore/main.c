@@ -43,7 +43,7 @@ int main()
         printf("Enter 0 or 1 to stop\nEnter the score of the game: ");
         fgets(raw_input, sizeof(raw_input), stdin); //"Defensive" programming
         parse_input(raw_input); 
-	     user_input = (unsigned int)strtoul(raw_input, NULL, 10);
+        user_input = (unsigned int)strtoul(raw_input, NULL, 10);
         printf("The value recieved is: %u\n", user_input);
         if(user_input < 2) {
             printf("Exiting...\n");
