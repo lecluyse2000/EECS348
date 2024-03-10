@@ -10,3 +10,4 @@
 # Ignore .o files
 *.o
 *.tar.gz
+*.txt
