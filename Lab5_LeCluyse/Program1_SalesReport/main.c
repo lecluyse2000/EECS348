@@ -9,7 +9,8 @@
 #include <string.h>
 
 
-struct SalesData{
+struct SalesData
+{
     float sales;
     char sales_month[12];
 }; 
@@ -44,35 +45,31 @@ void generate_sixmonth_average(const struct SalesData *sales_array)
 {
     float total_sales = 0.0;
     
-    printf("Six-Month Moving Average Sales Report:\n");
+    printf("\nSix-Month Moving Average Sales Report:\n");
     for(size_t i = 0; i < 12; ++i) {
         if(i < 6) {
-	    total_sales += sales_array[i].sales; 
-	} else {
-	    total_sales += sales_array[i].sales;
-	    total_sales -= sales_array[i - 6].sales; 
+	         total_sales += sales_array[i].sales; 
+	     } else {
+	         total_sales += sales_array[i].sales;
+	         total_sales -= sales_array[i - 6].sales; 
         }
-	if(i >= 5) {
-	    printf("%-10s\t-\t%-10s\t%.2f\n", sales_array[i - 5].sales_month, sales_array[i].sales_month, total_sales / 6.0);
-	}
+	     if(i >= 5) {
+	         printf("%-10s\t-\t%-10s\t%.2f\n", sales_array[i - 5].sales_month, sales_array[i].sales_month, total_sales / 6.0);
+	     }
     }
-    printf("\n");
 }
 
 int compare_sales(const void *numberone, const void *numbertwo)
 {
-    const struct SalesData *dataone = (const struct SalesData *)numberone; //wild
-    const struct SalesData *datatwo = (const struct SalesData *)numbertwo;
-    
-    return(datatwo->sales - dataone->sales);
+    return((*(const struct SalesData *)numbertwo).sales - (*(const struct SalesData *)numberone).sales);
 }
 
 void give_highest_lowest(struct SalesData *sales_array)
 {
     qsort(sales_array, 12, sizeof(struct SalesData), compare_sales); //magic
-    printf("Sales Report (Highest to Lowest):\nMonth\tSales\n");
+    printf("\nSales Report (Highest to Lowest):\nMonth     \tSales\n");
     for(size_t i = 0; i < 12; ++i) {
-        printf("%-10s\t%.2f\n\n", sales_array[i].sales_month, sales_array[i].sales);
+        printf("%-10s\t%.2f\n", sales_array[i].sales_month, sales_array[i].sales);
     }
 }
 
@@ -95,9 +92,11 @@ int main(int argc, char* argv[])
         printf("Error! File could not be opened!");
         return(1);
     }
-    for(size_t i = 0; i < 12; ++i) {
-        fscanf(fileptr, "%f", &sales_array[i].sales);
-        strcpy(sales_array[i].sales_month, months[i]);
+    while(!feof(fileptr)) {
+        for(size_t i = 0; i < 12; ++i) {
+            fscanf(fileptr, "%f", &sales_array[i].sales);
+            strcpy(sales_array[i].sales_month, months[i]);
+        }
     }
     fclose(fileptr);
 

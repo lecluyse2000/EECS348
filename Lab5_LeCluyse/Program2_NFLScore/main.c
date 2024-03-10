@@ -41,15 +41,16 @@ void generate_outcomes(int score)
 
 }
 
-int main(){
-    int user_input = 3;    
+int main()
+{
+    unsigned int user_input = 3;    
     char raw_input[50];
     
     while(user_input > 1) {
         printf("Enter 0 or 1 to stop\nEnter the score of the game: ");
         fgets(raw_input, sizeof(raw_input), stdin); //"Defensive" programming
         parse_input(raw_input); 
-	    user_input = atoi(raw_input);
+	     user_input = atoi(raw_input);
         generate_outcomes(user_input);
         if(user_input < 2) {
             printf("Exiting...\n");
