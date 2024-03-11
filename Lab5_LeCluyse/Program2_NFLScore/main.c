@@ -10,45 +10,64 @@
 #include <ctype.h>
 #include <string.h>
 
-int all_digits(char *input, size_t size)
+int all_digits(const char *input, const size_t size)
 {
     for(size_t i = 0; i < size; ++i) {
-        if(!isdigit(input[i]) && input[i] != '\n') {
+        if(!isdigit(input[i]) && input[i] != '\n' && input[i] != '\0') {
             return 0;
         }
     }
     return 1;
 }
 
-void parse_input(char *raw_input)
+void parse_input(char *raw_input, const size_t buffer_size)
 {
-    while(!all_digits(raw_input, strlen(raw_input)) || atoi(raw_input) > 300) {
-        if(all_digits(raw_input, strlen(raw_input)) && atoi(raw_input) > 300) {
-            printf("There will never be an NFL game of that many points scored. Try again: ");
+    do {
+        fgets(raw_input, buffer_size, stdin);
+        if(strlen(raw_input) - 1 > 4 || !all_digits(raw_input, strlen(raw_input)) || atol(raw_input) > 300) {
+            printf("Incorrect input! Try again: "); 
+            continue;
         } else {
-	         printf("Invalid input! Try again: ");
+            break;
         }
-        fgets(raw_input, sizeof(raw_input), stdin);
-    }
+    } while(1);
 }
 
+//Such an ugly solution, I was trying to do a recursive solution but couldn't get it to work
+void print_combinations(const int score)
+{
+    int remaining_score = 0;
+    for (int touchdown = 0; touchdown <= score / 6; ++touchdown) {
+        for (int field_goal = 0; field_goal <= score / 3; ++field_goal) {
+            for (int safety = 0; safety <= score / 2; ++safety) {
+                for (int touchdown_2pt = 0; touchdown_2pt <= (score - (touchdown * 6 + field_goal * 3 + safety * 2)) / 8; ++touchdown_2pt) {
+                    for (int touchdown_field_goal = 0; touchdown_field_goal <= (score - (touchdown * 6 + field_goal * 3 + safety * 2 + touchdown_2pt * 8)) / 7; ++touchdown_field_goal) {
+                        remaining_score = score - (touchdown * 6 + field_goal * 3 + safety * 2 + touchdown_2pt * 8 + touchdown_field_goal * 7);
+                        if (remaining_score == 0) {
+                            printf("%d Touchdown + 2pt, %d Touchdown + fg, %d Touchdown, %d 3pt fg, %d Safety\n", touchdown_2pt, touchdown_field_goal, touchdown, field_goal, safety);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    printf("\n");
+}
 
 int main()
 {
-    //I made the decision to make it unsigned, since an NFL score cant be negative
-    unsigned int user_input = 3;    
-    char raw_input[50];
-    
+    int user_input = 3;    
+    char raw_input[100];
     while(user_input > 1) {
         printf("Enter 0 or 1 to stop\nEnter the score of the game: ");
-        fgets(raw_input, sizeof(raw_input), stdin); //"Defensive" programming
-        parse_input(raw_input); 
-        user_input = (unsigned int)strtoul(raw_input, NULL, 10);
-        printf("The value recieved is: %u\n", user_input);
+        parse_input(raw_input, sizeof(raw_input)); //Defensive programming 
+        user_input = strtoul(raw_input, NULL, 10);
         if(user_input < 2) {
-            printf("Exiting...\n");
+            printf("Exiting...\n\n");
+        } else {
+            print_combinations(user_input); 
         }
-    }
+    }    
 
     return(0);
 }
