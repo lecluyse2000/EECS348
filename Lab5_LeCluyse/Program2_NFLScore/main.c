@@ -61,7 +61,7 @@ int main()
     while(user_input > 1) {
         printf("Enter 0 or 1 to stop\nEnter the score of the game: ");
         parse_input(raw_input, sizeof(raw_input)); //Defensive programming 
-        user_input = strtoul(raw_input, NULL, 10);
+        user_input = atoi(raw_input);
         if(user_input < 2) {
             printf("Exiting...\n\n");
         } else {
