@@ -2,31 +2,37 @@
 //Filename: main.cpp
 //Date: 3/21/24
 //Class: EECS348
-//Purpose: Get a matrix from a file and do a bunch of things with it
+//Purpose: Get two matrices from a file and do a bunch of things with them 
 
 #include <iostream>
 #include <cstdlib>
-#include <ifstream>
+#include <fstream>
 #include <limits>
 
-void create_matrix(int** matrix, const std::size_t size)
+//Extremely verbose so i decided to make a typedef
+typedef const int* const* const& const_2d_array_ref;
+
+
+int** create_matrix(const std::size_t size)
 {
-   matrix = new int*[matrix_size];
-   for(std::size_t i = 0; i < matrix_size; ++i) {
-      matrix[i] = new int[matrix_size];
+   int** matrix = new int*[size];
+   for(std::size_t i = 0; i < size; ++i) {
+      matrix[i] = new int[size];
    }
    for(std::size_t i = 0; i < size; ++i) {
       for(std::size_t j = 0; j < size; ++j) {
          matrix[i][j] = 0;
       }
    }
+   return matrix;
 }
-void parse_input(int** matrix, int** matrix_two, const std::ifstream& file, std::size_t& size)
+
+void parse_input(int**& matrix, int**& matrix_two, std::ifstream& file, std::size_t& size)
 {
    if(file.is_open()){
-      file >> size;
-      create_matrix(matrix, size);
-      create_matrix(matrix_two, size);
+      file >> size; 
+      matrix = create_matrix(size);
+      matrix_two = create_matrix(size);
       for(std::size_t i = 0; i < size * 2; ++i) {
          for(std::size_t j = 0; j < size; ++j) {
             if(i < size) {
@@ -42,7 +48,8 @@ void parse_input(int** matrix, int** matrix_two, const std::ifstream& file, std:
    }
 }
 
-void print_matrix(const int** matrix, const std::size_t size)
+//Took me forever to figure out why "const int**&" wasnt compiling
+void print_matrix(const_2d_array_ref matrix, const std::size_t size)
 {
    std::cout << '\n';
    for(std::size_t i = 0; i < size; ++i) {
@@ -54,11 +61,11 @@ void print_matrix(const int** matrix, const std::size_t size)
             std::cout << matrix[i][j] << " ";
          }
       }
-      std::cout << '|\n';
+      std::cout << "|\n";
    }
-{
+}
 
-void add_matrices(const int** matrix_one, const int** matrix_two, int** result, const std::size_t size)
+void add_matrices(const_2d_array_ref matrix_one, const_2d_array_ref matrix_two, int**& result, const std::size_t size)
 {
    for(std::size_t i = 0; i < size; ++i) {
       for(std::size_t j = 0; j < size; ++j) {
@@ -67,10 +74,11 @@ void add_matrices(const int** matrix_one, const int** matrix_two, int** result, 
    }
 }
 
-void multiply_matrices(const int** matrix_one, const int** matrix_two, int** result, const std::size_t size)
+void multiply_matrices(const_2d_array_ref matrix_one, const_2d_array_ref matrix_two, int**& result, const std::size_t size)
 {
    for(std::size_t i = 0; i < size; ++i) {
       for(std::size_t j = 0; j < size; ++j) {
+         result[i][j] = 0;
          for(std::size_t k = 0; k < size; ++k) {
             result[i][j] += matrix_one[i][k] * matrix_two[k][j];
          }
@@ -78,7 +86,7 @@ void multiply_matrices(const int** matrix_one, const int** matrix_two, int** res
    }
 }
 
-void subtract_matrices(const int** matrix_one, const int** matrix_two, int** result, const std::size_t size)
+void subtract_matrices(const_2d_array_ref matrix_one, const_2d_array_ref matrix_two, int**& result, const std::size_t size)
 {
    for(std::size_t i = 0; i < size; ++i) {
       for(std::size_t j = 0; j < size; ++j) {
@@ -87,7 +95,7 @@ void subtract_matrices(const int** matrix_one, const int** matrix_two, int** res
    }
 }
 
-void print_max(const int** matrix, const std::size_t size)
+void print_max(const_2d_array_ref matrix, const std::size_t size)
 {
    int max = 0;
    for(std::size_t i = 0; i < size; ++i) {
@@ -97,28 +105,28 @@ void print_max(const int** matrix, const std::size_t size)
          }
       }
    }
-   std::cout << "Max value of the first matrix is: " << max << "\n\n";
+   std::cout << "\n\nMax value of the first matrix is: " << max << "\n\n";
 }
 
-void update_value(int** matrix, const std::size_t size)
+void update_value(int**& matrix, const std::size_t size)
 {
    std::size_t row = 0;
    std::size_t col = 0;
    int value = 0;
 
-   std::cout << "Please enter the row of the value you wish to change: ";
+   std::cout << "\nPlease enter the row of the value you wish to change: ";
    while(!(std::cin >> row) || row >= size) {
       std::cin.clear();
       std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
       std::cout << "Incorrect input! Please try again: ";
    }
-   std::cout << "\nPlease enter the column of the value you wish to change: ";
+   std::cout << "Please enter the column of the value you wish to change: ";
    while(!(std::cin >> col) || col >= size) {
       std::cin.clear();
       std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
       std::cout << "Incorrect input! Please try again: ";
    }
-   std::cout << "\nEnter the new value you wish to insert: ";
+   std::cout << "Enter the new value you wish to insert: ";
    while(!(std::cin >> value)) {
       std::cin.clear();
       std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -127,23 +135,21 @@ void update_value(int** matrix, const std::size_t size)
    matrix[row][col] = value;
 }
 
-int** transpose_matrix(int** matrix, const std::size_t size)
+int** transpose_matrix(int**& matrix, const std::size_t size)
 {
-   int** return_matrix = nullptr;
-   create_matrix(return_matrix, size);
+   int** return_matrix = create_matrix(size);
 
    for(std::size_t i = 0; i < size; ++i) {
       for(std::size_t j = 0; j < size; ++j) {
-         return_matrix[i][j] = matrix[j][i]
+         return_matrix[i][j] = matrix[j][i];
       }
    }
    for(std::size_t i = 0; i < size; ++i) {
       delete[] matrix[i];
    }
-   delete matrix;
+   delete[] matrix;
    return return_matrix;
 }
-
 
 int main(int argc, char** argv)
 {
@@ -151,22 +157,22 @@ int main(int argc, char** argv)
    int** matrix = nullptr;
    int** matrix_two = nullptr;
    int** matrix_three = nullptr;
-   const std::ifstream inputFile(argv[1]);
+   std::ifstream inputFile(argv[1], std::ifstream::in);
 
    parse_input(matrix, matrix_two, inputFile, matrix_size);
    inputFile.close();
-   create_matrix(matrix_three, matrix_size);
-
+   matrix_three = create_matrix(matrix_size);
+   
    add_matrices(matrix, matrix_two, matrix_three, matrix_size);
-   std::cout << "Result of adding the matrices together:\n";
+   std::cout << "\nResult of adding the matrices together:\n";
    print_matrix(matrix_three, matrix_size);
-
+   
    multiply_matrices(matrix, matrix_two, matrix_three, matrix_size);
-   std::cout << "Result of multiplying the matrices together:\n";
+   std::cout << "\nResult of multiplying the matrices together:\n";
    print_matrix(matrix_three, matrix_size);
 
    subtract_matrices(matrix, matrix_two, matrix_three, matrix_size);
-   std::cout << "Result of subtracting the second matrix from the first matrix: \n";
+   std::cout << "\nResult of subtracting the second matrix from the first matrix: \n";
    print_matrix(matrix_three, matrix_size);
 
    update_value(matrix, matrix_size);
@@ -176,17 +182,17 @@ int main(int argc, char** argv)
    print_max(matrix, matrix_size);
 
    matrix = transpose_matrix(matrix, matrix_size);
-   std::cout << "Here is the transposed first matrix:\n";
+   std::cout << "\nHere is the transposed first matrix:\n";
    print_matrix(matrix, matrix_size);
-
+   
    for(std::size_t i = 0; i < matrix_size; ++i) {
-      delete[] matrix[i]
+      delete[] matrix[i];
       delete[] matrix_two[i];
       delete[] matrix_three[i];
    }
-   delete matrix;
-   delete matrix_two;
-   delete matrix_three;
+   delete[] matrix;
+   delete[] matrix_two;
+   delete[] matrix_three;
 
    return 0;
 }
