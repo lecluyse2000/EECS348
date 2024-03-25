@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <limits>
+#include <iomanip>
 
 //Extremely verbose so i decided to make a typedef
 typedef const int* const* const& const_2d_array_ref;
@@ -55,11 +56,10 @@ void print_matrix(const_2d_array_ref matrix, const std::size_t size)
    for(std::size_t i = 0; i < size; ++i) {
       std::cout << '|';
       for(std::size_t j = 0; j < size; ++j) {
-         if(j == size - 1) {
-            std::cout << matrix[i][j];
-         } else {
-            std::cout << matrix[i][j] << " ";
-         }
+         std::cout << std::setw(3) << matrix[i][j]; // Set width to 3 for each element
+            if (j != size - 1) {
+                std::cout << " ";
+            }
       }
       std::cout << "|\n";
    }
