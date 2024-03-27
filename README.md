@@ -43,14 +43,15 @@ Takes in two matrices from an input file and does a bunch of things with them as
 > Constraints
 > The matrices are square matrices (NxN), where N is a static constant. The input matrices are read from a file named "matrix_input.txt." The output matrices are displayed on the console.
 > Please align your output.
-> Sample Input (matrix_input.txt)
-> 3 // The size of the square matrix (N) and the input file should not include this comment
-> 1 2 3
-> 4 5 6
-> 7 8 9
-> 2 3 4
-> 5 6 7
-> 8 9 10
+> Sample Input (matrix_input.txt):   
+>
+> 3   
+> 1 2 3   
+> 4 5 6   
+> 7 8 9   
+> 2 3 4   
+> 5 6 7   
+> 8 9 10   
 
 Requires a file to be passed in at runtime:
 ```bash
