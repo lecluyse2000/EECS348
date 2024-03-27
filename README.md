@@ -9,7 +9,7 @@ The input file must be passed in in the terminal
 The input file must have 12 lines of numbers in order to function correctly, nothing else  
 The program assumes these numbers are formatted corectly from Jan-Dec  
 ```bash
-./SalesReport data.txt"  
+./SalesReport data.txt    
 ```
 
 ### Program2
