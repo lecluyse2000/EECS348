@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <title>Practice 2</title>
+      <style>
+         #text-inputs, #border-inputs {
+            margin-bottom: 10px;
+         }
+         #paragraph {
+            padding: 10px;
+            border-style: solid;
+            border-width: 1px;
+         }
+      </style>
+   </head>
+   <body>
+      <header><h1>Practice 2</h1></header>
+
+      <p id="paragraph">Dummy text</p>
+      <div id="text-inputs">
+         <input type="text" id="red_text" placeholder="Red (0-255)">
+         <input type="text" id="green_text" placeholder="Green (0-255)">
+         <input type="text" id="blue_text" placeholder="Blue (0-255)">
+      </div>
+      <div id="border-inputs">
+         <input type="text" id="red_border" placeholder="Border Red (0-255)">
+         <input type="text" id="green_border" placeholder="Border Green (0-255)">
+         <input type="text" id="blue_boarder" placeholder="Border Blue (0-255)">
+      </div>
+      <input type="text" id="border_width" placeholder="Border Width">
+      <script>
+
+         function updateParagraph() {
+             let textRed = parseInt(document.getElementById('red_text').value) || 0;
+             let textGreen = parseInt(document.getElementById('green_text').value) || 0;
+             let textBlue = parseInt(document.getElementById('blue_text').value) || 0;
+             let borderRed = parseInt(document.getElementById('red_border').value) || 0;
+             let borderGreen = parseInt(document.getElementById('green_border').value) || 0;
+             let borderBlue = parseInt(document.getElementById('blue_boarder').value) || 0;
+             let borderWidth = parseInt(document.getElementById('border_width').value) || 0;
+         
+             let paragraph = document.getElementById('paragraph');
+             paragraph.style.color = `rgb(${textRed}, ${textGreen}, ${textBlue})`;
+             paragraph.style.borderColor = `rgb(${borderRed}, ${borderGreen}, ${borderBlue})`;
+             paragraph.style.borderWidth = `${borderWidth}px`;
+         }
+         
+         document.querySelectorAll('input[type="text"]').forEach(input => {
+             input.addEventListener('input', updateParagraph);
+         });
+         
+         document.getElementById('border_width').addEventListener('input', updateParagraph);
+      </script>
+   </body>
+</html>
+
