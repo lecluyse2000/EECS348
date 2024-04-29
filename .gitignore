@@ -6,6 +6,7 @@
 !*/
 !.gitignore
 !makefile
+!**Dockerfile
 
 # Ignore .o files
 *.o
